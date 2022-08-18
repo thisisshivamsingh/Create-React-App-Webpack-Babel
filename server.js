@@ -11,7 +11,20 @@ app.use(express.static(path.join(__dirname, "dist")));
 // route
 
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "/dist/index.html"));
+  res.sendFile(__dirname, "/dist/index.html");
 });
 
+if (process.env.NODE_ENV !== "production") {
+  const webpack = require("webpack");
+  const webpackConfig = require("./webpack.config");
+  const compiler = webpack(webpackConfig);
+
+  app.use(require("webpack-dev-middleware")(compiler));
+  app.use(
+    require("webpack-dev-middleware")(compiler, {
+      // noInfo: true,
+      publicPath: webpackConfig.output.publicPath,
+    })
+  );
+}
 app.listen(PORT, () => console.log(`server is running on ${PORT}`));

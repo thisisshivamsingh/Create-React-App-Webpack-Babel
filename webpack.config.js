@@ -1,10 +1,12 @@
 const path = require("path");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
   mode: "production",
   entry: {
-    app: "./src/test.jsx",
+    app: ["webpack-hot-middleware/client", "./src/test.jsx"],
   },
   output: {
     filename: "[name].bundle.js",
@@ -23,9 +25,12 @@ module.exports = {
     ],
   },
   plugins: [
+    new CleanWebpackPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new HTMLWebpackPlugin({
       template: "./src/test.html",
       filename: "index.html",
+      chunks: ["app"],
     }),
   ],
 };
